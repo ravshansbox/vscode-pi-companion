@@ -3,7 +3,7 @@
   "displayName": "PI Companion",
   "description": "Share VS Code context with pi coding agent",
   "repository": "https://github.com/ravshansbox/vscode-pi-companion",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "publisher": "ravshansbox",
   "keywords": [
     "pi-package"
