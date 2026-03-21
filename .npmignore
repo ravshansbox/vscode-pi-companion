@@ -1,0 +1,7 @@
+.github
+.vscode
+node_modules
+out
+*.vsix
+screenshot.png
+tsconfig.json
