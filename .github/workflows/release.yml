@@ -18,6 +18,12 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
+        if: github.event.inputs.tag == ''
+      
+      - uses: actions/checkout@v4
+        if: github.event.inputs.tag != ''
+        with:
+          ref: ${{ github.event.inputs.tag }}
       
       - uses: actions/setup-node@v4
         with:
@@ -31,7 +37,12 @@ jobs:
       
       - name: Get version
         id: version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        run: |
+          if [ -n "${{ github.event.inputs.tag }}" ]; then
+            echo "VERSION=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
       
       - name: Create Release
         uses: softprops/action-gh-release@v2
