@@ -1,0 +1,66 @@
+{
+  "name": "pi-companion",
+  "displayName": "PI Companion",
+  "description": "Share VS Code context with pi coding agent",
+  "version": "0.0.1",
+  "publisher": "local",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "AI",
+    "Other"
+  ],
+  "main": "./out/extension.js",
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "vscode:prepublish": "npm run compile"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.85.0",
+    "@types/ws": "^8.18.1",
+    "@vscode/vsce": "^2.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "ws": "^8.16.0",
+    "zod": "^3.22.4"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "configuration": {
+      "title": "PI Companion",
+      "properties": {
+        "piCompanion.port": {
+          "type": "number",
+          "default": 8765,
+          "description": "Port for MCP server"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "pi-companion.start",
+        "title": "PI Companion: Start Server"
+      },
+      {
+        "command": "pi-companion.stop",
+        "title": "PI Companion: Stop Server"
+      },
+      {
+        "command": "pi-companion.status",
+        "title": "PI Companion: Show Status"
+      }
+    ]
+  }
+}
