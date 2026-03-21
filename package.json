@@ -3,7 +3,7 @@
   "displayName": "PI Companion",
   "description": "Share VS Code context with pi coding agent",
   "version": "0.0.1",
-  "publisher": "local",
+  "publisher": "ravshansbox",
   "engines": {
     "vscode": "^1.85.0"
   },
