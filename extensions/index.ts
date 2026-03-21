@@ -13,6 +13,12 @@ import * as http from "http";
 import { execSync } from "child_process";
 import { Type } from "@sinclair/typebox";
 
+function isLocalPackageInstall(): boolean {
+  const filename = __filename;
+  return !filename.includes(`${path.sep}.pi${path.sep}agent${path.sep}git${path.sep}`)
+    && !filename.includes(`${path.sep}.pi${path.sep}git${path.sep}`);
+}
+
 // Check if running in VS Code integrated terminal
 function isRunningInVSCode(): boolean {
   return process.env.TERM_PROGRAM === 'vscode';
@@ -47,11 +53,13 @@ async function installVSCodeExtension(ctx: ExtensionContext): Promise<void> {
   const isInstalled = isExtensionInstalled();
   
   if (isInstalled) {
-    // Already installed - check for updates
-    const latestVersion = await getLatestVersion();
-    if (latestVersion) {
-      console.log(`[PI Companion] Update available: v${latestVersion}`);
-      console.log(`[PI Companion] Run: pi install git:github.com/ravshansbox/vscode-pi-companion`);
+    // Already installed - check for updates, but skip for local package installs
+    if (!isLocalPackageInstall()) {
+      const latestVersion = await getLatestVersion();
+      if (latestVersion) {
+        console.log(`[PI Companion] Update available: v${latestVersion}`);
+        console.log(`[PI Companion] Run: pi install git:github.com/ravshansbox/vscode-pi-companion`);
+      }
     }
     return;
   }
@@ -289,7 +297,7 @@ export default function (pi: ExtensionAPI) {
       ctx.ui.notify("PI Companion: Connected to VS Code", "info");
       connectSSE();
     } else {
-      ctx.ui.notify("PI Companion: VS Code extension not detected", "warning");
+      ctx.ui.notify("PI Companion: VS Code companion server not running. Run 'PI Companion: Start Server' in VS Code.", "warning");
     }
   });
 
