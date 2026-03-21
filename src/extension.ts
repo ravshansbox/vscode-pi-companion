@@ -3,6 +3,7 @@ import { IDEServer } from './ide-server';
 
 let ideServer: IDEServer | undefined;
 let outputChannel: vscode.OutputChannel;
+let statusBarItem: vscode.StatusBarItem;
 
 export function activate(context: vscode.ExtensionContext) {
   outputChannel = vscode.window.createOutputChannel('PI Companion');
@@ -14,14 +15,28 @@ export function activate(context: vscode.ExtensionContext) {
   // Start server immediately
   server.start(context).then(() => {
     log(`Server started on port ${server.getPort()}`);
-    vscode.window.showInformationMessage(`PI Companion: Server running on port ${server.getPort()}`);
   }).catch((err) => {
     log(`Failed to start server: ${err}`);
-    vscode.window.showErrorMessage(`PI Companion: Failed to start server`);
   });
+
+  // Create status bar button
+  statusBarItem = vscode.window.createStatusBarItem(
+    vscode.StatusBarAlignment.Left,
+    100
+  );
+  statusBarItem.text = '$(terminal) Run PI';
+  statusBarItem.tooltip = 'Run PI in terminal';
+  statusBarItem.command = 'pi-companion.run';
+  statusBarItem.show();
 
   // Register commands
   context.subscriptions.push(
+    statusBarItem,
+
+    vscode.commands.registerCommand('pi-companion.run', () => {
+      runPiInTerminal();
+    }),
+
     vscode.commands.registerCommand('pi-companion.start', async () => {
       if (ideServer?.isRunning()) {
         vscode.window.showInformationMessage('PI Companion: Server already running');
@@ -46,9 +61,16 @@ export function activate(context: vscode.ExtensionContext) {
   );
 }
 
+function runPiInTerminal() {
+  const terminal = vscode.window.activeTerminal || vscode.window.createTerminal('PI');
+  terminal.show();
+  terminal.sendText('pi');
+}
+
 export function deactivate() {
   log('Extension deactivated');
   ideServer?.stop();
+  statusBarItem?.dispose();
 }
 
 function log(message: string) {
