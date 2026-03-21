@@ -4,16 +4,17 @@ on:
   push:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   publish-vscode:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: true
+          fetch-depth: 0
       
       - uses: actions/setup-node@v4
         with:
@@ -45,7 +46,7 @@ jobs:
     needs: publish-vscode
     if: startsWith(github.ref, 'refs/tags/v')
     permissions:
-      id-token: write  # Required for OIDC Trusted Publishing
+      id-token: write
       
     steps:
       - uses: actions/checkout@v4
