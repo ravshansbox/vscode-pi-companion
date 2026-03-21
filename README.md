@@ -11,13 +11,10 @@ A VS Code extension that provides real-time IDE context (files, selection) to pi
 
 ## Architecture
 
-```
-VS Code Extension          pi Extension
-─────────────────          ───────────
-• Context tracking    ←──→  • SSE client
-• SSE server               • Widget
-                            • Context injection
-```
+**VS Code Extension** → SSE ← **pi Extension**
+
+- **VS Code**: Context tracking, SSE server
+- **pi**: SSE client, Widget, Context injection
 
 ## Installation
 
