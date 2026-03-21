@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          persist-credentials: true
       
       - uses: actions/setup-node@v4
         with:
@@ -27,7 +27,6 @@ jobs:
       - name: Publish
         env:
           VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
@@ -37,4 +36,4 @@ jobs:
           vsce publish patch --pat $VSCE_TOKEN --skip-duplicate
           
           # Push the tag created by vsce
-          git push --follow-tags
+          git push --follow-tags origin main
