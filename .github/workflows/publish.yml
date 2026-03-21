@@ -32,5 +32,6 @@ jobs:
           git config --local user.name "github-actions"
           git config --local user.email "github-actions@github.com"
           
-          # Publish with version bump and create GitHub release
-          vsce publish patch --pat $VSCE_TOKEN --githubRelease
+          # Package and publish with version bump
+          npx vsce package
+          vsce publish patch --pat $VSCE_TOKEN --skip-duplicate
