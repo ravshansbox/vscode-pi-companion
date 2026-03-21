@@ -27,6 +27,10 @@ jobs:
       - name: Publish
         env:
           VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Publish with auto-versioning (bumps patch, updates package.json, creates tag)
-          vsce publish --pat $VSCE_TOKEN
+          git config --local user.name "github-actions"
+          git config --local user.email "github-actions@github.com"
+          
+          # Publish with version bump (patch by default)
+          vsce publish patch --pat $VSCE_TOKEN
