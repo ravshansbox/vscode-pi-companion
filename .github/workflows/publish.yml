@@ -26,13 +26,17 @@ jobs:
         id: bump
         run: |
           COMMIT_MSG=$(git log -1 --pretty=%B | head -1)
-          if echo "$COMMIT_MSG" | grep -q "minor"; then
-            vsce bump minor
-          elif echo "$COMMIT_MSG" | grep -q "major"; then
+          echo "Commit message: $COMMIT_MSG"
+          
+          # Conventional commits: fix→patch, feat→minor, feat!→major
+          if echo "$COMMIT_MSG" | grep -qE "^[a-z]+!:"; then
             vsce bump major
+          elif echo "$COMMIT_MSG" | grep -qE "^feat:"; then
+            vsce bump minor
           else
             vsce bump patch
           fi
+          
           echo "VERSION=$(cat package.json | grep '"version"' | cut -d'"' -f4)" >> $GITHUB_OUTPUT
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
