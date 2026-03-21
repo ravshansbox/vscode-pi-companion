@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Pre-push hook for vscode-pi-companion
+# Publishes to VS Code Marketplace on push to main
+
+branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+remote=$1
+url=$2
+
+# Only publish when pushing to main on origin
+if [[ "$branch" != "main" ]]; then
+    exit 0
+fi
+
+echo "🚀 Publishing to VS Code Marketplace..."
+
+# Check for VSCE_TOKEN
+if [[ -z "$VSCE_TOKEN" ]]; then
+    echo "⚠️  VSCE_TOKEN not set. Run: export VSCE_TOKEN=your_pat_token"
+    echo "   Get token at: https://marketplace.visualstudio.com/manage/publishers/ravshansbox/vscode-pi-companion/hub"
+    exit 1
+fi
+
+# Compile TypeScript
+npm run compile || { echo "❌ Compile failed"; exit 1; }
+
+# Package and publish
+npx vsce package
+npx vsce publish patch --pat $VSCE_TOKEN --skip-duplicate
+
+echo "✅ Published successfully!"
