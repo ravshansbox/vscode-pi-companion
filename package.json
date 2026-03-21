@@ -1,5 +1,5 @@
 {
-  "name": "pi-companion",
+  "name": "vscode-pi-companion",
   "displayName": "PI Companion",
   "description": "Share VS Code context with pi coding agent",
   "version": "0.0.1",
