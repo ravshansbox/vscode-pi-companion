@@ -5,6 +5,7 @@
   "repository": "https://github.com/ravshansbox/vscode-pi-companion",
   "version": "0.0.1",
   "publisher": "ravshansbox",
+  "keywords": ["pi-package"],
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -34,6 +35,9 @@
     "express": "^4.18.2",
     "ws": "^8.16.0",
     "zod": "^3.22.4"
+  },
+  "pi": {
+    "extensions": ["./extensions"]
   },
   "activationEvents": [
     "onStartupFinished"

@@ -1,0 +1,9 @@
+{
+  "name": "vscode-pi-companion-extension",
+  "version": "0.0.1",
+  "type": "module",
+  "dependencies": {
+    "@mariozechner/pi-coding-agent": "*",
+    "@sinclair/typebox": "*"
+  }
+}
