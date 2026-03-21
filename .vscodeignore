@@ -13,3 +13,4 @@ extensions/node_modules/
 tsconfig.json
 .envrc
 hooks/
+scripts/
