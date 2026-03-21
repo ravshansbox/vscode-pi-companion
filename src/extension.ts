@@ -21,7 +21,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   // Create status bar button
   statusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Left,
+    vscode.StatusBarAlignment.Right,
     100
   );
   statusBarItem.text = '$(terminal) Run PI';
