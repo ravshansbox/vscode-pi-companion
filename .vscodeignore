@@ -2,6 +2,7 @@ src/
 .vscode/
 .github/
 .gitignore
+.git/
 *.ts
 *.map
 !out/**/*.js
@@ -10,3 +11,5 @@ node_modules/
 extensions/node_modules/
 *.vsix
 tsconfig.json
+.envrc
+hooks/
