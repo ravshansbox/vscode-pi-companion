@@ -10,6 +10,8 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       
       - uses: actions/setup-node@v4
         with:
@@ -22,58 +24,9 @@ jobs:
       - name: Install vsce
         run: npm install -g @vscode/vsce
       
-      - name: Bump version
-        id: bump
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          
-          COMMIT_MSG=$(git log -1 --pretty=%B | head -1)
-          echo "Commit message: $COMMIT_MSG"
-          
-          # Skip if already a bump commit
-          if echo "$COMMIT_MSG" | grep -q "bump version"; then
-            echo "Already a bump commit, skipping version bump"
-            CURRENT=$(cat package.json | grep '"version"' | head -1 | cut -d'"' -f4)
-            echo "VERSION=$CURRENT" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-          
-          # Read current version
-          CURRENT=$(cat package.json | grep '"version"' | head -1 | cut -d'"' -f4)
-          echo "Current version: $CURRENT"
-          
-          # Parse version parts
-          IFS='.' read -r major minor patch <<< "$CURRENT"
-          
-          # Conventional commits: fix→patch, feat→minor, feat!→major
-          if echo "$COMMIT_MSG" | grep -qE "^[a-z]+!:"; then
-            new_major=$((major + 1)); new_minor=0; new_patch=0
-          elif echo "$COMMIT_MSG" | grep -qE "^feat:"; then
-            new_major=$major; new_minor=$((minor + 1)); new_patch=0
-          else
-            new_major=$major; new_minor=$minor; new_patch=$((patch + 1))
-          fi
-          
-          NEW_VERSION="$new_major.$new_minor.$new_patch"
-          echo "New version: $NEW_VERSION"
-          
-          # Update package.json
-          sed -i "s/\"version\": \"$CURRENT\"/\"version\": \"$NEW_VERSION\"/" package.json
-          
-          # Commit and tag
-          git add package.json
-          git commit -m "chore: bump version to $NEW_VERSION"
-          git tag "v$NEW_VERSION"
-          git push && git push --tags
-          
-          echo "VERSION=$NEW_VERSION" >> $GITHUB_OUTPUT
-      
-      - name: Compile TypeScript
-        run: npm run compile
-      
-      - name: Package and publish
+      - name: Publish
         env:
           VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
         run: |
+          # Publish with auto-versioning (bumps patch, updates package.json, creates tag)
           vsce publish --pat $VSCE_TOKEN
