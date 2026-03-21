@@ -62,9 +62,14 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 function runPiInTerminal() {
-  const terminal = vscode.window.activeTerminal || vscode.window.createTerminal('PI');
+  // Create new terminal so shell rc files (including direnv hook) are sourced
+  const terminal = vscode.window.createTerminal({
+    name: 'PI',
+    isTransient: true
+  });
   terminal.show();
-  terminal.sendText('pi');
+  // Ensure direnv is loaded, then run pi
+  terminal.sendText('eval "$(direnv export json 2>/dev/null)" 2>/dev/null; pi');
 }
 
 export function deactivate() {
