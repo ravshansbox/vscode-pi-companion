@@ -35,3 +35,6 @@ jobs:
           # Package and publish with version bump
           npx vsce package
           vsce publish patch --pat $VSCE_TOKEN --skip-duplicate
+          
+          # Push the tag created by vsce
+          git push --follow-tags
