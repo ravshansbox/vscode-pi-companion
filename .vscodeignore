@@ -5,8 +5,8 @@ src/
 .git/
 *.ts
 *.map
-!out/**/*.js
-!out/**/*.d.ts
+!dist/**/*.js
+!dist/**/*.d.ts
 *.vsix
 tsconfig.json
 .envrc

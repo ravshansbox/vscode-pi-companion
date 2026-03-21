@@ -15,7 +15,7 @@
     "AI",
     "Other"
   ],
-  "main": "./out/extension.js",
+  "main": "./dist/extension.js",
   "scripts": {
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
@@ -60,10 +60,6 @@
     },
     "commands": [
       {
-        "command": "pi-companion.run",
-        "title": "PI Companion: Run PI"
-      },
-      {
         "command": "pi-companion.start",
         "title": "PI Companion: Start Server"
       },
@@ -74,14 +70,6 @@
       {
         "command": "pi-companion.status",
         "title": "PI Companion: Show Status"
-      }
-    ],
-    "keybindings": [
-      {
-        "command": "pi-companion.run",
-        "key": "cmd+escape",
-        "mac": "cmd+escape",
-        "when": "editorTextFocus"
       }
     ]
   }

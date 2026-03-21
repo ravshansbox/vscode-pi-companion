@@ -3,8 +3,6 @@ import { IDEServer } from './ide-server';
 
 let ideServer: IDEServer | undefined;
 let outputChannel: vscode.OutputChannel;
-let statusBarItem: vscode.StatusBarItem;
-
 export function activate(context: vscode.ExtensionContext) {
   outputChannel = vscode.window.createOutputChannel('PI Companion');
   log('Extension activated');
@@ -19,23 +17,8 @@ export function activate(context: vscode.ExtensionContext) {
     log(`Failed to start server: ${err}`);
   });
 
-  // Create status bar button
-  statusBarItem = vscode.window.createStatusBarItem(
-    vscode.StatusBarAlignment.Right,
-    100
-  );
-  statusBarItem.text = '$(terminal) Run PI';
-  statusBarItem.tooltip = 'Run PI in terminal';
-  statusBarItem.command = 'pi-companion.run';
-  statusBarItem.show();
-
   // Register commands
   context.subscriptions.push(
-    statusBarItem,
-
-    vscode.commands.registerCommand('pi-companion.run', () => {
-      runPiInTerminal();
-    }),
 
     vscode.commands.registerCommand('pi-companion.start', async () => {
       if (ideServer?.isRunning()) {
@@ -61,21 +44,9 @@ export function activate(context: vscode.ExtensionContext) {
   );
 }
 
-function runPiInTerminal() {
-  // Create new terminal so shell rc files (including direnv hook) are sourced
-  const terminal = vscode.window.createTerminal({
-    name: 'PI',
-    isTransient: true
-  });
-  terminal.show();
-  // Ensure direnv is loaded, then run pi
-  terminal.sendText('eval "$(direnv export json 2>/dev/null)" 2>/dev/null; pi');
-}
-
 export function deactivate() {
   log('Extension deactivated');
   ideServer?.stop();
-  statusBarItem?.dispose();
 }
 
 function log(message: string) {

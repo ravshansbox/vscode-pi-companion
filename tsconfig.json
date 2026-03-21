@@ -3,7 +3,7 @@
     "target": "ES2020",
     "module": "commonjs",
     "lib": ["ES2020"],
-    "outDir": "./out",
+    "outDir": "./dist",
     "rootDir": "./src",
     "strict": true,
     "esModuleInterop": true,
@@ -12,5 +12,5 @@
     "moduleResolution": "node"
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "out"]
+  "exclude": ["node_modules", "dist"]
 }
