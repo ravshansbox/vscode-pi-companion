@@ -1,6 +1,6 @@
 {
   "name": "vscode-pi-companion",
-  "displayName": "PI Companion",
+  "displayName": "VS Code",
   "description": "Share VS Code context with pi coding agent",
   "repository": "https://github.com/ravshansbox/vscode-pi-companion",
   "version": "0.1.5",
@@ -49,7 +49,7 @@
   ],
   "contributes": {
     "configuration": {
-      "title": "PI Companion",
+      "title": "VS Code",
       "properties": {
         "piCompanion.port": {
           "type": "number",
@@ -61,15 +61,15 @@
     "commands": [
       {
         "command": "pi-companion.start",
-        "title": "PI Companion: Start Server"
+        "title": "VS Code: Start Server"
       },
       {
         "command": "pi-companion.stop",
-        "title": "PI Companion: Stop Server"
+        "title": "VS Code: Stop Server"
       },
       {
         "command": "pi-companion.status",
-        "title": "PI Companion: Show Status"
+        "title": "VS Code: Show Status"
       }
     ]
   }

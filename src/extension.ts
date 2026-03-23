@@ -4,7 +4,7 @@ import { IDEServer } from './ide-server';
 let ideServer: IDEServer | undefined;
 let outputChannel: vscode.OutputChannel;
 export function activate(context: vscode.ExtensionContext) {
-  outputChannel = vscode.window.createOutputChannel('PI Companion');
+  outputChannel = vscode.window.createOutputChannel('VS Code');
   log('Extension activated');
 
   const server = new IDEServer(log, outputChannel);
@@ -22,23 +22,23 @@ export function activate(context: vscode.ExtensionContext) {
 
     vscode.commands.registerCommand('pi-companion.start', async () => {
       if (ideServer?.isRunning()) {
-        vscode.window.showInformationMessage('PI Companion: Server already running');
+        vscode.window.showInformationMessage('VS Code: Server already running');
         return;
       }
       await ideServer?.start(context);
-      vscode.window.showInformationMessage(`PI Companion: Server started on port ${ideServer?.getPort()}`);
+      vscode.window.showInformationMessage(`VS Code: Server started on port ${ideServer?.getPort()}`);
     }),
 
     vscode.commands.registerCommand('pi-companion.stop', async () => {
       await ideServer?.stop();
-      vscode.window.showInformationMessage('PI Companion: Server stopped');
+      vscode.window.showInformationMessage('VS Code: Server stopped');
     }),
 
     vscode.commands.registerCommand('pi-companion.status', () => {
       const running = ideServer?.isRunning();
       const port = ideServer?.getPort();
       vscode.window.showInformationMessage(
-        `PI Companion: ${running ? `Running on port ${port}` : 'Stopped'}`
+        `VS Code: ${running ? `Running on port ${port}` : 'Stopped'}`
       );
     }),
   );
