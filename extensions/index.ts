@@ -47,6 +47,7 @@ let lastWidgetKey = "";
 let widgetDebounceTimer: NodeJS.Timeout | undefined;
 let reconnectTimer: NodeJS.Timeout | undefined;
 let sseRequest: http.ClientRequest | undefined;
+let isConnected = false;
 
 function isRunningInVSCode(): boolean {
   return process.env.TERM_PROGRAM === "vscode";
@@ -137,13 +138,15 @@ async function getLivePort(): Promise<number | undefined> {
 function updateWidget(): void {
   if (!currentCtx) return;
 
+  const connectionStatus = isConnected ? "Connected" : "Disconnected";
+
   if (!currentContext || !currentContext.workspaceState.openFiles.length) {
-    currentCtx.ui.setWidget("pi-companion", ["PI Companion: No files open"]);
+    currentCtx.ui.setWidget("pi-companion", [`PI Companion: ${connectionStatus} • No files open`]);
     return;
   }
 
   const { workspaceState } = currentContext;
-  const lines: string[] = [];
+  const lines: string[] = [`PI Companion: ${connectionStatus}`];
   const activeFile = workspaceState.openFiles.find((f) => f.isActive);
 
   if (activeFile) {
@@ -190,6 +193,8 @@ async function connectSSE(): Promise<void> {
       path: "/context/stream",
     },
     (res) => {
+      isConnected = true;
+      updateWidget();
       let buffer = "";
 
       res.on("data", (chunk: string) => {
@@ -260,7 +265,6 @@ export default function (pi: ExtensionAPI) {
 
     const port = await getLivePort();
     if (port) {
-      ctx.ui.notify("PI Companion: Connected to VS Code", "info");
       await connectSSE();
     } else {
       ctx.ui.notify("PI Companion: VS Code companion server not running. Run 'PI Companion: Start Server' in VS Code.", "warning");
