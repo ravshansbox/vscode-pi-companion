@@ -138,15 +138,15 @@ async function getLivePort(): Promise<number | undefined> {
 function updateWidget(): void {
   if (!currentCtx) return;
 
-  const connectionStatus = isConnected ? "Connected" : "Disconnected";
-
   if (!currentContext || !currentContext.workspaceState.openFiles.length) {
-    currentCtx.ui.setWidget("pi-companion", [`VS Code: ${connectionStatus} • No files open`]);
+    // Show "Connected" only while waiting for file context, or "Disconnected" if not connected
+    const status = isConnected ? "VS Code: Connected" : "VS Code: Disconnected";
+    currentCtx.ui.setWidget("pi-companion", [status]);
     return;
   }
 
   const { workspaceState } = currentContext;
-  const lines: string[] = [`VS Code: ${connectionStatus}`];
+  const lines: string[] = [];
   const activeFile = workspaceState.openFiles.find((f) => f.isActive);
 
   if (activeFile) {
@@ -162,7 +162,7 @@ function updateWidget(): void {
 
   const otherCount = workspaceState.openFiles.length - 1;
   if (otherCount > 0) {
-    lines.push(`   +${otherCount} more file${otherCount > 1 ? "s" : ""} open`);
+    lines.push(`   +${otherCount} more file${otherCount > 1 ? "s" : ""}`);
   }
 
   const widgetKey = lines.join("|");
