@@ -138,17 +138,24 @@ async function getLivePort(): Promise<number | undefined> {
 function updateWidget(): void {
   if (!currentCtx) return;
 
-  if (!currentContext || !currentContext.workspaceState.openFiles.length) {
-    // Only show "Disconnected" if connection is lost
-    if (!isConnected) {
-      currentCtx.ui.setWidget("pi-companion", ["VS Code: Disconnected"]);
-    }
+  if (!isConnected) {
+    currentCtx.ui.setWidget("pi-companion", ["vscode: disconnected"]);
+    return;
+  }
+
+  if (!currentContext) {
+    currentCtx.ui.setWidget("pi-companion", ["vscode: connected"]);
+    return;
+  }
+
+  if (!currentContext.workspaceState.openFiles.length) {
+    currentCtx.ui.setWidget("pi-companion", ["vscode: no files"]);
     return;
   }
 
   const { workspaceState } = currentContext;
-  const lines: string[] = [];
-  const activeFile = workspaceState.openFiles.find((f) => f.isActive);
+  const activeFile = workspaceState.openFiles.find((f) => f.isActive) || workspaceState.openFiles[0];
+  const filenames = workspaceState.openFiles.map((f) => f.path.split("/").pop() || f.path);
 
   if (activeFile) {
     const filename = activeFile.path.split("/").pop() || activeFile.path;
@@ -158,24 +165,14 @@ function updateWidget(): void {
       const end = activeFile.selectionEnd.line;
       location = start === end ? ` L${start}` : ` L${start}:${end}`;
     }
-    lines.push(`📄 ${filename}${location}`);
+    const label = filenames.length === 1
+      ? `${filename}${location}`
+      : `${filename}${location} +${filenames.length - 1}`;
+    currentCtx.ui.setWidget("pi-companion", [label]);
+    return;
   }
 
-  const otherCount = workspaceState.openFiles.length - 1;
-  if (otherCount > 0) {
-    lines.push(`   +${otherCount} more file${otherCount > 1 ? "s" : ""}`);
-  }
-
-  const widgetKey = lines.join("|");
-  if (widgetDebounceTimer) clearTimeout(widgetDebounceTimer);
-
-  widgetDebounceTimer = setTimeout(() => {
-    if (widgetKey !== lastWidgetKey) {
-      lastWidgetKey = widgetKey;
-      currentCtx!.ui.setWidget("pi-companion", lines);
-    }
-    widgetDebounceTimer = undefined;
-  }, WIDGET_DEBOUNCE_MS);
+  currentCtx.ui.setWidget("pi-companion", [filenames.join(", ")]);
 }
 
 async function connectSSE(): Promise<void> {
