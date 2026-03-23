@@ -141,12 +141,12 @@ function updateWidget(): void {
   const connectionStatus = isConnected ? "Connected" : "Disconnected";
 
   if (!currentContext || !currentContext.workspaceState.openFiles.length) {
-    currentCtx.ui.setWidget("pi-companion", [`PI Companion: ${connectionStatus} • No files open`]);
+    currentCtx.ui.setWidget("pi-companion", [`VS Code: ${connectionStatus} • No files open`]);
     return;
   }
 
   const { workspaceState } = currentContext;
-  const lines: string[] = [`PI Companion: ${connectionStatus}`];
+  const lines: string[] = [`VS Code: ${connectionStatus}`];
   const activeFile = workspaceState.openFiles.find((f) => f.isActive);
 
   if (activeFile) {
