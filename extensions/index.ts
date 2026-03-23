@@ -48,7 +48,6 @@ let widgetDebounceTimer: NodeJS.Timeout | undefined;
 let reconnectTimer: NodeJS.Timeout | undefined;
 let sseRequest: http.ClientRequest | undefined;
 let isConnected = false;
-let hasReceivedContext = false;
 
 function isRunningInVSCode(): boolean {
   return process.env.TERM_PROGRAM === "vscode";
@@ -140,10 +139,9 @@ function updateWidget(): void {
   if (!currentCtx) return;
 
   if (!currentContext || !currentContext.workspaceState.openFiles.length) {
-    // Show status while waiting for context, or "Disconnected" if connection lost
-    if (!hasReceivedContext || !isConnected) {
-      const status = isConnected ? "VS Code: Connected" : "VS Code: Disconnected";
-      currentCtx.ui.setWidget("pi-companion", [status]);
+    // Only show "Disconnected" if connection is lost
+    if (!isConnected) {
+      currentCtx.ui.setWidget("pi-companion", ["VS Code: Disconnected"]);
     }
     return;
   }
@@ -211,7 +209,6 @@ async function connectSSE(): Promise<void> {
           if (!data || data === "[object Object]") continue;
           try {
             currentContext = JSON.parse(data);
-            hasReceivedContext = true;
             updateWidget();
           } catch {
             // Ignore malformed SSE payloads.
